@@ -1,5 +1,6 @@
 package org.example.diploma_jwt.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,9 @@ import lombok.*;
 @NoArgsConstructor
 @Table(name = "t_vk")
 public class VK {
+
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -24,7 +27,7 @@ public class VK {
     private Long clubID = 0L;
 
     private boolean isPercentage= false;
-    private Double markup = 0.0;
+    private Double markup = 0.0D;
 
     public VK(User user) {
         this.user = user;

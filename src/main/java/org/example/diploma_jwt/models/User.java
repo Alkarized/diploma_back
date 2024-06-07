@@ -1,18 +1,21 @@
 package org.example.diploma_jwt.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.example.diploma_jwt.models.usable.ParsedExcelData;
 import org.example.diploma_jwt.models.usable.Role;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
@@ -23,6 +26,7 @@ import java.util.Set;
 })
 public class User{
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -62,6 +66,11 @@ public class User{
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "settings_id", referencedColumnName = "id")
     private Settings settings;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JsonIgnore
+    @JoinColumn(name = "user_id")
+    private List<UserLog> logs = new ArrayList<>();
 
     public User(String username, String email, String password, String firstname) {
         this.username = username;

@@ -3,6 +3,7 @@ package org.example.diploma_jwt.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.diploma_jwt.models.usable.item_data.ComplexItem;
 
 import java.util.Set;
 
@@ -16,6 +17,7 @@ import java.util.Set;
 @ToString
 public class Item {
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -23,23 +25,29 @@ public class Item {
     private String article;
     private String code;
     private String company;
+
+    @JsonIgnore
     private String title;
 
-    @Transient
     @JsonIgnore
     private Integer rowNum;
 
+    @JsonIgnore
+    private Long itemCompanyID;
+
+    @JsonIgnore
+    private Double oldPrice;
+
     @Transient
     @JsonIgnore
-    private Integer itemCompanyID;
+    private ComplexItem complexItem = new ComplexItem();
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "settings_id")
-    private Settings settings;
-
-    public Item(Settings settings) {
-        this.settings = settings;
+    public void setNewPrice(boolean isPerctange, Double markup){
+        if (isPerctange) {
+            setPrice(getPrice() * (1 + markup/100));
+        } else {
+            setPrice(getPrice() + markup);
+        }
     }
 
 }

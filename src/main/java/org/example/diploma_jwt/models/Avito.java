@@ -1,5 +1,6 @@
 package org.example.diploma_jwt.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,9 @@ import lombok.*;
 @EqualsAndHashCode
 @Table(name = "t_avito")
 public class Avito {
+
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

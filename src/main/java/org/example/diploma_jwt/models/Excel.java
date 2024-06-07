@@ -9,12 +9,12 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 @ToString
 @Table(name = "t_excel")
 public class Excel {
-    @JsonIgnore
+
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -31,5 +31,15 @@ public class Excel {
 
     public Excel(Settings settings) {
         this.settings = settings;
+    }
+
+    public String toLog() {
+        return "Excel{" +
+                "article='" + article + '\'' +
+                ", price='" + price + '\'' +
+                ", code='" + code + '\'' +
+                ", company='" + company + '\'' +
+                ", title='" + title + '\'' +
+                '}';
     }
 }
