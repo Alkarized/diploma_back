@@ -23,27 +23,50 @@ public class HttpRequestUtil {
 
     public static JSONObject getJsonFromGetRequest(String url, Map<String, String> headers) {
         try {
-            HttpURLConnection httpClient = (HttpURLConnection) new URL(url).openConnection();
-            httpClient.setRequestMethod("GET");
-            httpClient.setRequestProperty("Content-Type", "application/json");
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest.Builder builder = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Content-Type", "application/json") //application/x-www-form-urlencoded
+                    .GET();
 
             if (headers != null){
                 for (Map.Entry<String, String> entry : headers.entrySet()) {
-                    httpClient.setRequestProperty(entry.getKey(), entry.getValue());
+                    builder = builder.header(entry.getKey(), entry.getValue());
                 }
             }
 
-            int responseCode = httpClient.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) { // success
-                return getJsonObject(httpClient);
-            } else {
-                httpClient.disconnect();
-            }
+            HttpRequest request = builder.build();
 
-        } catch (Exception e) {
+            HttpResponse<String> response = null;
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return new JSONObject(response.body());
+        } catch (Exception e){
             e.printStackTrace();
         }
+
         return null;
+//        try {
+//            HttpURLConnection httpClient = (HttpURLConnection) new URL(url).openConnection();
+//            httpClient.setRequestMethod("GET");
+//            httpClient.setRequestProperty("Content-Type", "application/json");
+//
+//            if (headers != null){
+//                for (Map.Entry<String, String> entry : headers.entrySet()) {
+//                    httpClient.setRequestProperty(entry.getKey(), entry.getValue());
+//                }
+//            }
+//
+//            int responseCode = httpClient.getResponseCode();
+//            if (responseCode == HttpURLConnection.HTTP_OK) { // success
+//                return getJsonObject(httpClient);
+//            } else {
+//                httpClient.disconnect();
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
 
     }
 

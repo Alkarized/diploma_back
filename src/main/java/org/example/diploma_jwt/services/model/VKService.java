@@ -38,19 +38,21 @@ public class VKService {
         List<Item> toUpdate = new ArrayList<>();
 
         List<Item> items = VKUtils.getAllVKItems(vk, settings);
+        System.out.println("ITEMS GOTTTTT: " + items);
 
-        log.info("items from VK GOT {}", items.toString());
+        //log.info("items from VK GOT {}", items.toString());
+        System.out.println("size:" + items.size());
 
         userLogService.createAndSaveLog(user, "VK DATA GOT: " + items.toString(), LogType.INFO);
 
         //log.info("from vk got list: {}", items);
         for (Item item : items) {
-            System.out.println(settings.getCheckOrders());
+            //System.out.println(settings.getCheckOrders());
             List<CheckOrder> orders = settings.getCheckOrders();
-            System.out.println("orders: " + orders.toString());
+            //System.out.println("orders: " + orders.toString());
             for (int i = 0; i < orders.size(); i++) {
                 CheckOrder order = orders.get(i);
-                System.out.println("order NOW:" + order.toString());
+                //System.out.println("order NOW:" + order.toString());
                 if (order.compareItems(item, parsedExcelData, settings)) {
                     item.setNewPrice(vk.isPercentage(), vk.getMarkup());
                     if (!item.getOldPrice().equals(item.getPrice())) {

@@ -16,7 +16,7 @@ import java.util.List;
 public class ExcelDataParser {
     private static void forIteration(Item tmpItem, ParsedExcelData parsedExcelData){
 
-        log.info("item got: {}", tmpItem);
+        //log.info("item got: {}", tmpItem);
 
         // --------------------------- Арткул
         if (tmpItem.getArticle().equals("None")) { // Пустой артикул
@@ -63,7 +63,7 @@ public class ExcelDataParser {
     public static ParsedExcelData parseData(List<List<String>> data, Settings settings) {
         List<Integer> indexes = getListOfIndexes(data.get(0), settings.getExcel());
 
-        log.info("got list of indexes: {}", indexes);
+        //log.info("got list of indexes: {}", indexes);
 
         ParsedExcelData parsedExcelData = new ParsedExcelData();
 
@@ -105,7 +105,9 @@ public class ExcelDataParser {
         item.setArticle(row.get(indexes.get(0)).strip());
         item.setCode(row.get(indexes.get(1)).strip());
         item.setCompany(row.get(indexes.get(2)).strip());
-        item.setPrice(Double.valueOf(row.get(indexes.get(3))));
+        if (!row.get(indexes.get(3)).equals("None")){
+            item.setPrice(Double.valueOf(row.get(indexes.get(3))));
+        }
         item.setTitle(row.get(indexes.get(4)).strip());
 
         return item;

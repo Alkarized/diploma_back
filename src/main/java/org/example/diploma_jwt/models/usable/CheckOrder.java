@@ -24,13 +24,13 @@ public enum CheckOrder implements ItemComparable {
         public boolean compareItems(Item item, ParsedExcelData data, Settings settings) {
             String article = item.getComplexItem().getArticleForm();
             if (article != null){
-                log.info("only artilce search");
-                log.info("oas keyset: {}", data.getNonEmptyAndSameArticle().keySet());
+                //log.info("only artilce search");
+                //log.info("oas keyset: {}", data.getNonEmptyAndSameArticle().keySet());
                 Item dataItem = data.getNonEmptyAndSameArticle().getOrDefault(article, null);
                 if (dataItem != null){
-                    log.info("oas found dataItem: {}", dataItem);
+                    //log.info("oas found dataItem: {}", dataItem);
                     if (!settings.getBlackListForm().getArticles().contains(article)){
-                        log.info("oas new price");
+                        //log.info("oas new price");
                         item.setPrice(dataItem.getPrice());
                         return true;
                     }
@@ -42,17 +42,17 @@ public enum CheckOrder implements ItemComparable {
         @Override
         public boolean compareItems(Item item, ParsedExcelData data, Settings settings) {
 
-            log.info("ARTC_COMP ITEM: {}", item);
+            //log.info("ARTC_COMP ITEM: {}", item);
 
             ArticleAndCompanyForm articleAndCompany = item.getComplexItem().getArticleAndCompanyForm();
-            log.info("ARTC_COMP ITEM2: {}", articleAndCompany);
-            log.info("ARTC_COMP ITEM3: {}", item.getComplexItem());
+            //log.info("ARTC_COMP ITEM2: {}", articleAndCompany);
+            //log.info("ARTC_COMP ITEM3: {}", item.getComplexItem());
             if (articleAndCompany != null){
-                log.info("artilce and comp search");
+                //log.info("artilce and comp search");
                 Item dataItem = data.getNonEmptyAndSameArticleCompany().getOrDefault(articleAndCompany.getArticle() + " " + articleAndCompany.getCompany(), null);
                 if (dataItem != null){
                     if (!settings.getBlackListForm().getArticleAndCompany().contains(articleAndCompany)){
-                        log.info("ancs new price");
+                        //log.info("ancs new price");
                         item.setPrice(dataItem.getPrice());
                         return true;
                     }
@@ -66,10 +66,10 @@ public enum CheckOrder implements ItemComparable {
             ManyItemsForm manyItems = item.getComplexItem().getManyItemsForm();
             List<Double> prices = new ArrayList<>();
             Item dataItem;
-            log.info("many articles search: {}", manyItems);
-            log.info("data article: {}", data.getNonEmptyAndSameArticle());
-            log.info("data article and company: {}", data.getNonEmptyAndSameArticleCompany());
-            log.info("data codes: {}", data.getNonEmptyAndSameCode());
+            //log.info("many articles search: {}", manyItems);
+            //log.info("data article: {}", data.getNonEmptyAndSameArticle());
+            //log.info("data article and company: {}", data.getNonEmptyAndSameArticleCompany());
+            //log.info("data codes: {}", data.getNonEmptyAndSameCode());
             if (manyItems == null){
                 return false;
             }
@@ -80,7 +80,7 @@ public enum CheckOrder implements ItemComparable {
                 }
                 if (dataItem != null && !settings.getBlackListForm().getArticles().contains(article)){
                     prices.add(dataItem.getPrice());
-                    log.info("added article");
+                    //log.info("added article");
                 }
             }
 
@@ -104,11 +104,11 @@ public enum CheckOrder implements ItemComparable {
                 }
                 if (dataItem != null && !settings.getBlackListForm().getArticleAndCompany().contains(articleAndCompany)){
                     prices.add(dataItem.getPrice());
-                    log.info("added article and company");
+                    //log.info("added article and company");
                 }
             }
 
-            log.info("get new prices: {}", prices);
+            //log.info("get new prices: {}", prices);
 
             if (manyItems.getType() == null){
                 item.setPrice(settings.getManyType().getManyItemsPrice(prices));
@@ -123,12 +123,12 @@ public enum CheckOrder implements ItemComparable {
         public boolean compareItems(Item item, ParsedExcelData data, Settings settings) {
             String code = item.getComplexItem().getCodeForm();
             if (code != null){
-                log.info("code search");
+                //log.info("code search");
 
                 Item dataItem = data.getNonEmptyAndSameCode().getOrDefault(code, null);
                 if (dataItem != null){
                     if (!settings.getBlackListForm().getCodes().contains(code)){
-                        log.info("cs new price");
+                        //log.info("cs new price");
                         item.setPrice(dataItem.getPrice());
                         return true;
                     }
@@ -139,31 +139,31 @@ public enum CheckOrder implements ItemComparable {
     }, COMPLEX {
         @Override
         public boolean compareItems(Item item, ParsedExcelData data, Settings settings) {
-            log.info("complex search");
+            //log.info("complex search");
             String complex = item.getComplexItem().getComplexForm();
             if (complex != null){
-                log.info("complex 1");
+                //log.info("complex 1");
                 CharStream input = CharStreams.fromString(complex);
                 ArticlesLexer lexer = new ArticlesLexer(input);
                 CommonTokenStream tokens = new CommonTokenStream(lexer);
                 ArticlesParser parser = new ArticlesParser(tokens);
-                log.info("complex 2");
+                //log.info("complex 2");
                 ParseTree tree = parser.expr();
 
                 ArticleEvaluator evaluator = new ArticleEvaluator(data);
                 try {
-                    log.info("complex 3");
+                    //log.info("complex 3");
                     Double result = evaluator.visit(tree);
-                    log.info("complex 4");
+                    //log.info("complex 4");
                     item.setPrice(result);
-                    log.info("complex result : {}", result);
-                    log.info("complex 6");
-                    log.info("complex new price");
+                    //log.info("complex result : {}", result);
+                    //log.info("complex 6");
+                    //log.info("complex new price");
                     item.setPrice(result);
-                    log.info("complex 7");
+                    //log.info("complex 7");
                     return true;
                 } catch (NullPointerException e){
-                    log.info("complex 5");
+                    //log.info("complex 5");
                    return false;
                 }
             }
@@ -175,12 +175,12 @@ public enum CheckOrder implements ItemComparable {
         public boolean compareItems(Item item, ParsedExcelData data, Settings settings) {
             String article = item.getComplexItem().getArticleFieldForm();
             if (article != null){
-                log.info("artilce field search");
+                //log.info("artilce field search");
                 Item dataItem = data.getNonEmptyAndSameArticle().getOrDefault(article, null);
                 if (dataItem != null){
-                    log.info("afs data found: {}", dataItem);
+                    //log.info("afs data found: {}", dataItem);
                     if (!settings.getBlackListForm().getArticles().contains(article)){
-                        log.info("afs new price");
+                        //log.info("afs new price");
                         item.setPrice(dataItem.getPrice());
                         return true;
                     }

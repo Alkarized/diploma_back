@@ -17,35 +17,61 @@ public class VKUtils {
     private final static String API_URL = "https://api.vk.com/method/market";
     private final static String MARKET_GET = ".get?";
     private final static String MARKET_EDIT = ".edit?";
+    private final static int COUNT_MAX = 200;
 
     public static List<Item> getAllVKItems(VK vk, Settings settings) {
-        String url = API_URL + MARKET_GET + paramsString(vk);
+        int count = 0;
+        int countGet = 0;
+        Map<String, String> parameters1 = new HashMap<>();
+        parameters1.put("count", "0");
+
+        String url = API_URL + MARKET_GET + paramsString(vk, parameters1);
         List<Item> itemGot = new ArrayList<>();
         JSONObject allItems = HttpRequestUtil.getJsonFromGetRequest(url);
+        count = allItems.getJSONObject("response").getInt("count");
 
-        if (allItems != null) {
-            JSONArray jsonArray = allItems.getJSONObject("response").getJSONArray("items");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject vkItem = jsonArray.getJSONObject(i);
-                Item item = new Item();
+        while (countGet < count){
+            log.info("count all - {}, count get - {}", count, countGet);
 
-                String desc = vkItem.getString("description");
-                Long itemVKID = vkItem.getLong("id");
-                Double price = vkItem.getJSONObject("price").getDouble("amount") / 100; //todo check
-                String title = vkItem.getString("title");
-                String article = vkItem.getString("sku");
+            Map<String, String> parameters2 = new HashMap<>();
+            parameters2.put("offset", String.valueOf(countGet));
+            parameters2.put("count", String.valueOf(COUNT_MAX));
+            url = API_URL + MARKET_GET + paramsString(vk, parameters2);
+            allItems = HttpRequestUtil.getJsonFromGetRequest(url);
 
-                item.setItemCompanyID(itemVKID);
-                item.setTitle(title);
-                item.setOldPrice(price);
+            if (allItems != null) {
+                JSONArray jsonArray = allItems.getJSONObject("response").getJSONArray("items");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject vkItem = jsonArray.getJSONObject(i);
+                    Item item = new Item();
 
-                if (!article.equals(settings.getNoneField())){
-                    item.getComplexItem().setArticleFieldForm(article);
+                    String desc = vkItem.getString("description");
+                    Long itemVKID = vkItem.getLong("id");
+                    Double price = vkItem.getJSONObject("price").getDouble("amount") / 100; //todo check
+                    String title = vkItem.getString("title");
+                    String article = vkItem.getString("sku");
+
+                    item.setItemCompanyID(itemVKID);
+                    item.setTitle(title);
+                    item.setOldPrice(price);
+
+                    if (!article.equals(settings.getNoneField())){
+                        item.getComplexItem().setArticleFieldForm(article);
+                    }
+
+                    DescParser.parseDesc(desc, item.getComplexItem());
+                    itemGot.add(item);
                 }
-
-                DescParser.parseDesc(desc, item.getComplexItem());
-                itemGot.add(item);
             }
+
+            countGet += COUNT_MAX;
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
         }
 
         return itemGot;
@@ -73,8 +99,8 @@ public class VKUtils {
 
             JSONObject result = HttpRequestUtil.getJsonFromGetRequest(url);
 
-            log.info("params string: {}", params);
-            log.info("price updated with {}", result);
+            //log.info("params string: {}", params);
+            //log.info("price updated with {}", result);
 
             if (result != null && result.getInt("response") == 1){
                 updatedItems.add(true);

@@ -40,7 +40,7 @@ public class PriceController {
         settings.setParsedExcelData(parsedExcelData);
         settingsService.saveSettings(settings);
 
-        log.info("data got parsed: {}", parsedExcelData);
+        //log.info("data got parsed: {}", parsedExcelData);
         userLogService.createAndSaveLog(user, "new Update Price Excel Requset", LogType.INFO);
         userLogService.createAndSaveLog(user, "got parsed Data: " + parsedExcelData.toString(), LogType.INFO);
 
